@@ -2,24 +2,27 @@
 - name: Install Wazuh Agent
   hosts: Server
   become: yes
-  
+
   tasks:
     - name: Check if Wazuh Agent is already installed
-      command: dpkg -l | grep wazuh-agent
+      shell: dpkg-query -W -f='${Status}' wazuh-agent | grep "install ok installed"
+      ignore_errors: true
       register: wazuh_agent_installed
 
     - name: Install Wazuh Agent if not installed
       command: wget https://packages.wazuh.com/4.x/apt/pool/main/w/wazuh-agent/wazuh-agent_4.11.2-1_amd64.deb && sudo WAZUH_MANAGER='172.30.2.148' dpkg -i ./wazuh-agent_4.11.2-1_amd64.deb
       when: wazuh_agent_installed.rc != 0
+      ignore_errors: true
       register: install_result
 
     - name: Check if Wazuh Agent is running
       command: systemctl is-active wazuh-agent
       register: wazuh_agent_status
-      when: wazuh_agent_installed.rc == 1
+      ignore_errors: true
+      when: wazuh_agent_installed.rc != 1
 
     - name: Start Wazuh Agent if not running
       command: systemctl start wazuh-agent
       when: wazuh_agent_status.stdout != "active"
+      ignore_errors: true
       register: start_result
-
