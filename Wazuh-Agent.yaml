@@ -9,8 +9,35 @@
       ignore_errors: true
       register: wazuh_agent_installed
 
-    - name: Install Wazuh Agent if not installed
-      command: wget https://packages.wazuh.com/4.x/apt/pool/main/w/wazuh-agent/wazuh-agent_4.11.2-1_amd64.deb && sudo WAZUH_MANAGER='172.30.2.148' dpkg -i ./wazuh-agent_4.11.2-1_amd64.deb
+- name: Install Wazuh Agent if not installed
+  block:
+    - name: Import Wazuh GPG key
+      shell: curl -s https://packages.wazuh.com/key/GPG-KEY-WAZUH | gpg --no-default-keyring --keyring gnupg-ring:/usr/share/keyrings/wazuh.gpg --import && chmod 644 /usr/share/keyrings/wazuh.gpg
+      register: import_key_result
+
+    - name: Add Wazuh repository
+      shell: echo "deb [signed-by=/usr/share/keyrings/wazuh.gpg] https://packages.wazuh.com/4.x/apt/ stable main" | tee /etc/apt/sources.list.d/wazuh.list
+      register: add_repo_result
+
+    - name: Update package list
+      shell: apt-get update
+      register: update_result
+
+    - name: Install Wazuh Agent
+      shell: WAZUH_MANAGER="172.30.2.148" apt-get install -y wazuh-agent
+      register: install_result
+
+    - name: Verify Wazuh Agent installation
+      fail:
+        msg: "Failed to install Wazuh Agent. Please check the repository or installation process."
+      when: install_result.rc != 0
+  when: wazuh_agent_installed.rc != 0
+  
+  - name: Install Wazuh Agent if not installed
+      command: curl -s https://packages.wazuh.com/key/GPG-KEY-WAZUH | gpg --no-default-keyring --keyring gnupg-ring:/usr/share/keyrings/wazuh.gpg --import && chmod 644 /usr/share/keyrings/wazuh.gpg
+      command: echo "deb [signed-by=/usr/share/keyrings/wazuh.gpg] https://packages.wazuh.com/4.x/apt/ stable main" | tee -a /etc/apt/sources.list.d/wazuh.list
+      command: apt-get update
+      command: WAZUH_MANAGER="172.30.2.148" apt-get install wazuh-agent
       when: wazuh_agent_installed.rc != 0
       ignore_errors: true
       register: install_result
