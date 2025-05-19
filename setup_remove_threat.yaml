@@ -1,0 +1,26 @@
+---
+- name: Setup Wazuh active response script
+  hosts: all
+  become: yes
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install jq
+      apt:
+        name: jq
+        state: present
+
+    - name: Download remove-threat.sh script
+      ansible.builtin.get_url:
+        url: https://raw.githubusercontent.com/MaltheOlsen/Installation/refs/heads/main/Wazuh/active-response/remove-threat.sh
+        dest: /var/ossec/active-response/bin/remove-threat.sh
+        mode: '0750'
+        owner: root
+        group: wazuh
+
+    - name: Restart wazuh-agent to apply changes
+      ansible.builtin.systemd:
+        name: wazuh-agent
+        state: restarted
