@@ -1,0 +1,18 @@
+---
+- name: Download ossec.conf using curl
+  hosts: all
+  become: yes
+  tasks:
+    - name: Ensure curl is installed
+      apt:
+        name: curl
+        state: present
+        update_cache: yes
+
+    - name: Download ossec.conf to /var/ossec/etc/ossec.conf
+      ansible.builtin.command:
+        cmd: >
+          curl -o /var/ossec/etc/ossec.conf
+          https://raw.githubusercontent.com/MaltheOlsen/Installation/be4b940cfa36d09b27e26e3fedac830b78375a75/Wazuh/ossec.conf
+      args:
+        creates: /var/ossec/etc/ossec.conf
