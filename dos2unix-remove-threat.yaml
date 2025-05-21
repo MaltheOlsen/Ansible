@@ -1,9 +1,7 @@
 ---
 - name: Convert script to Unix format on selected Linux hosts
-  hosts: linux:!wazuh
+  hosts: linux:!wazuh,!backup
   become: yes
   tasks:
     - name: Convert remove-threat.sh to Unix format
-      ansible.builtin.command: dos2unix /var/ossec/active-response/bin/remove-threat.sh
-      args:
-        warn: false
+      command: dos2unix /var/ossec/active-response/bin/remove-threat.sh
