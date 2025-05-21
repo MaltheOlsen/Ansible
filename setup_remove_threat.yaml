@@ -1,6 +1,6 @@
 ---
 - name: Setup Wazuh active response script
-  hosts: all
+  hosts: linux:!wazuh
   become: yes
   tasks:
     - name: Update apt cache
