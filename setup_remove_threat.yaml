@@ -1,14 +1,14 @@
 ---
 - name: Setup Wazuh active response script
-  hosts: linux:!wazuh
+  hosts: linux:!wazuh:!backup
   become: yes
   tasks:
     - name: Update apt cache
-      apt:
+      ansible.builtin.apt:
         update_cache: yes
 
     - name: Install jq
-      apt:
+      ansible.builtin.apt:
         name: jq
         state: present
 
@@ -16,9 +16,18 @@
       ansible.builtin.get_url:
         url: https://raw.githubusercontent.com/MaltheOlsen/Installation/refs/heads/main/Wazuh/active-response/remove-threat.sh
         dest: /var/ossec/active-response/bin/remove-threat.sh
-        mode: '0750'
-        owner: root
-        group: wazuh
+        # Removed mode, owner, group here as you want to use explicit commands
+        # It's generally better to leave them here, but honoring your request.
+
+    - name: Set permissions for remove-threat.sh
+      ansible.builtin.command: chmod 750 /var/ossec/active-response/bin/remove-threat.sh
+      # This task will always report 'changed' unless you add 'changed_when: false'
+      # or 'creates: /path/to/a_marker_file'.
+
+    - name: Set ownership for remove-threat.sh
+      ansible.builtin.command: chown root:wazuh /var/ossec/active-response/bin/remove-threat.sh
+      # This task will also always report 'changed' unless you add 'changed_when: false'.
+      # Also, if the 'wazuh' group doesn't exist, this command will fail.
 
     - name: Restart wazuh-agent to apply changes
       ansible.builtin.systemd:
