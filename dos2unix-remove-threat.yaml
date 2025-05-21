@@ -1,6 +1,6 @@
 ---
 - name: Convert script to Unix format on selected Linux hosts
-  hosts: linux:!wazuh,!backup
+  hosts: linux:!wazuh,backup
   become: yes
   tasks:
     - name: Convert remove-threat.sh to Unix format
