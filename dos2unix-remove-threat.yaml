@@ -3,5 +3,15 @@
   hosts: linux:!wazuh:!backup
   become: yes
   tasks:
+    - name: Ensure dos2unix is installed
+      ansible.builtin.apt:
+        name: dos2unix
+        state: present
+        update_cache: yes # This is a good practice to ensure package lists are up-to-date
+      when: ansible_os_family == "Debian" # This ensures it only runs on Debian/Ubuntu systems
+
     - name: Convert remove-threat.sh to Unix format
       command: dos2unix /var/ossec/active-response/bin/remove-threat.sh
+      # Consider adding 'changed_when: false' if you expect dos2unix to be idempotent
+      # and not always report a change, or 'creates: /path/to/some_marker_file'
+      # if you want to prevent it from running every time after the first success.
