@@ -14,7 +14,7 @@
 
     - name: Download remove-threat.sh script
       ansible.builtin.get_url:
-        url: https://raw.githubusercontent.com/MaltheOlsen/Installation/refs/heads/main/Wazuh/active-response/remove-threat.sh
+        url: https://raw.githubusercontent.com/MaltheOlsen/Installation/refs/heads/main/Wazuh/active-response/Virustotal/remove-threat.sh
         dest: /var/ossec/active-response/bin/remove-threat.sh
         # Removed mode, owner, group here as you want to use explicit commands
         # It's generally better to leave them here, but honoring your request.
