@@ -1,6 +1,6 @@
 ---
 - name: Configure Wazuh Manager with updated ossec.conf
-  hosts: linux:wazuh
+  hosts: linux:!wazuh
   become: yes
   tasks:
     - name: Ensure curl is installed
