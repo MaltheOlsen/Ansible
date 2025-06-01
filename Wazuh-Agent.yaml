@@ -1,6 +1,6 @@
 ---
 - name: Install Wazuh Agent
-  hosts: Server
+  hosts: linux:!wazuh
   become: yes
 
   tasks:
