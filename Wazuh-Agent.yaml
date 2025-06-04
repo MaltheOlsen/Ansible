@@ -1,6 +1,6 @@
 ---
 - name: Install Wazuh Agent
-  hosts: linux:!wazuh
+  hosts: '{{ Host }}'
   become: yes
 
   tasks:
