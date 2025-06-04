@@ -1,6 +1,6 @@
 ---
 - name: Ping all non-ansible group hosts
-  hosts: all:!ansible
+  hosts: '{{ Host }}'
   gather_facts: true
 
   tasks:
