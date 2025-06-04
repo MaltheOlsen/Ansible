@@ -1,6 +1,6 @@
 ---
 - name: Update and upgrade servers
-  hosts: Server
+  hosts: '{{ Host }}'
   become: yes
   tasks:
     - name: Update apt cache
