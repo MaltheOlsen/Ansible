@@ -1,0 +1,10 @@
+---
+- name: Add SSH keys to servers
+  hosts: localhost
+  roles:
+    - role: rywillia.ssh-copy-id 
+      vars:
+        hostname: '{{ IP }}'
+        username: '{{ Username }}'
+        password: '{{ Password }}'
+        ssh_public_key: /home/administrator/.ssh/id_ed25519.pub
