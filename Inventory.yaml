@@ -1,1 +1,20 @@
+---
+VMs:
+  children:
+    linux:
+      hosts:
+        wazuh:
+          ansible_host: 10.69.1.20
 
+    Windows:
+      hosts:
+        AD:
+          ansible_host: 10.69.1.53
+      vars:
+        ansible_user: administrator
+        ansible_shell_type: powershell
+        
+Proxmox:
+  hosts:
+    PVE1:
+      ansible_host: 10.69.1.2
