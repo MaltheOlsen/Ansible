@@ -1,6 +1,6 @@
 ---
 - name: Setup Wazuh active response script
-  hosts: linux:!wazuh:!backup
+  hosts: '{{ Host }}'
   become: yes
   tasks:
     - name: Update apt cache
